@@ -1,0 +1,126 @@
+{
+  "data": {
+    "edges": [],
+    "nodes": [
+      {
+        "data": {
+          "id": "DigitNormalization-proof",
+          "node": {
+            "base_classes": [
+              "JSON"
+            ],
+            "beta": false,
+            "conditional_paths": [],
+            "custom_fields": {},
+            "description": "Compare two strings after folding Unicode decimal digits.",
+            "display_name": "Digit Normalization",
+            "documentation": "",
+            "edited": false,
+            "field_order": [],
+            "frozen": false,
+            "legacy": false,
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Comparison",
+                "group_outputs": false,
+                "method": "compare",
+                "name": "comparison",
+                "selected": "JSON",
+                "tool_mode": true,
+                "types": [
+                  "JSON"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "api_editable": false,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from lfx.custom import Component\nfrom lfx.io import Output, StrInput\nfrom lfx.schema import Data\n\nfrom digit_text import normalize_digits\n\n\nclass DigitNormalization(Component):\n    display_name = \"Digit Normalization\"\n    description = \"Compare two strings after folding Unicode decimal digits.\"\n    name = \"DigitNormalization\"\n\n    inputs = [\n        StrInput(name=\"left_text\", display_name=\"Left text\"),\n        StrInput(name=\"right_text\", display_name=\"Right text\"),\n    ]\n    outputs = [Output(name=\"comparison\", display_name=\"Comparison\", method=\"compare\")]\n\n    def compare(self) -> Data:\n        left = normalize_digits(self.left_text)\n        right = normalize_digits(self.right_text)\n        return Data(data={\"left\": left, \"right\": right, \"equal\": left == right})\n"
+              },
+              "left_text": {
+                "_input_type": "StrInput",
+                "advanced": false,
+                "api_editable": false,
+                "display_name": "Left text",
+                "dynamic": false,
+                "info": "",
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "left_text",
+                "override_skip": false,
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "track_in_telemetry": false,
+                "type": "str",
+                "value": ""
+              },
+              "right_text": {
+                "_input_type": "StrInput",
+                "advanced": false,
+                "api_editable": false,
+                "display_name": "Right text",
+                "dynamic": false,
+                "info": "",
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "right_text",
+                "override_skip": false,
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "track_in_telemetry": false,
+                "type": "str",
+                "value": ""
+              }
+            },
+            "tool_mode": false
+          },
+          "type": "DigitNormalization"
+        },
+        "id": "DigitNormalization-proof",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "type": "genericNode"
+      }
+    ]
+  },
+  "description": "Compare Unicode decimal digits.",
+  "endpoint_name": "digit-normalization-proof",
+  "id": "c427dad7-a92f-4731-bab1-0205b40175c7",
+  "is_component": false,
+  "name": "Digit Normalization Proof"
+}

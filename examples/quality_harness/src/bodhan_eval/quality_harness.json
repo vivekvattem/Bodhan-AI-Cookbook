@@ -1,0 +1,595 @@
+{
+  "data": {
+    "edges": [
+      {
+        "data": {
+          "sourceHandle": {
+            "dataType": "Preparation",
+            "id": "Preparation-harness",
+            "name": "batch",
+            "output_types": [
+              "JSON"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "prepared",
+            "id": "DeterministicChecks-harness",
+            "inputTypes": [
+              "Data",
+              "JSON"
+            ],
+            "type": "FieldTypes.OTHER"
+          }
+        },
+        "id": "Preparation-harness--DeterministicChecks-harness",
+        "source": "Preparation-harness",
+        "sourceHandle": "{\u0153dataType\u0153: \u0153Preparation\u0153, \u0153id\u0153: \u0153Preparation-harness\u0153, \u0153name\u0153: \u0153batch\u0153, \u0153output_types\u0153: [\u0153JSON\u0153]}",
+        "target": "DeterministicChecks-harness",
+        "targetHandle": "{\u0153fieldName\u0153: \u0153prepared\u0153, \u0153id\u0153: \u0153DeterministicChecks-harness\u0153, \u0153inputTypes\u0153: [\u0153Data\u0153, \u0153JSON\u0153], \u0153type\u0153: \u0153FieldTypes.OTHER\u0153}"
+      },
+      {
+        "data": {
+          "sourceHandle": {
+            "dataType": "DeterministicChecks",
+            "id": "DeterministicChecks-harness",
+            "name": "batch",
+            "output_types": [
+              "JSON"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "checked",
+            "id": "ModelEvidence-harness",
+            "inputTypes": [
+              "Data",
+              "JSON"
+            ],
+            "type": "FieldTypes.OTHER"
+          }
+        },
+        "id": "DeterministicChecks-harness--ModelEvidence-harness",
+        "source": "DeterministicChecks-harness",
+        "sourceHandle": "{\u0153dataType\u0153: \u0153DeterministicChecks\u0153, \u0153id\u0153: \u0153DeterministicChecks-harness\u0153, \u0153name\u0153: \u0153batch\u0153, \u0153output_types\u0153: [\u0153JSON\u0153]}",
+        "target": "ModelEvidence-harness",
+        "targetHandle": "{\u0153fieldName\u0153: \u0153checked\u0153, \u0153id\u0153: \u0153ModelEvidence-harness\u0153, \u0153inputTypes\u0153: [\u0153Data\u0153, \u0153JSON\u0153], \u0153type\u0153: \u0153FieldTypes.OTHER\u0153}"
+      },
+      {
+        "data": {
+          "sourceHandle": {
+            "dataType": "ModelEvidence",
+            "id": "ModelEvidence-harness",
+            "name": "batch",
+            "output_types": [
+              "JSON"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "evidence",
+            "id": "Judging-harness",
+            "inputTypes": [
+              "Data",
+              "JSON"
+            ],
+            "type": "FieldTypes.OTHER"
+          }
+        },
+        "id": "ModelEvidence-harness--Judging-harness",
+        "source": "ModelEvidence-harness",
+        "sourceHandle": "{\u0153dataType\u0153: \u0153ModelEvidence\u0153, \u0153id\u0153: \u0153ModelEvidence-harness\u0153, \u0153name\u0153: \u0153batch\u0153, \u0153output_types\u0153: [\u0153JSON\u0153]}",
+        "target": "Judging-harness",
+        "targetHandle": "{\u0153fieldName\u0153: \u0153evidence\u0153, \u0153id\u0153: \u0153Judging-harness\u0153, \u0153inputTypes\u0153: [\u0153Data\u0153, \u0153JSON\u0153], \u0153type\u0153: \u0153FieldTypes.OTHER\u0153}"
+      },
+      {
+        "data": {
+          "sourceHandle": {
+            "dataType": "Judging",
+            "id": "Judging-harness",
+            "name": "batch",
+            "output_types": [
+              "JSON"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "reviewed",
+            "id": "ResultValidation-harness",
+            "inputTypes": [
+              "Data",
+              "JSON"
+            ],
+            "type": "FieldTypes.OTHER"
+          }
+        },
+        "id": "Judging-harness--ResultValidation-harness",
+        "source": "Judging-harness",
+        "sourceHandle": "{\u0153dataType\u0153: \u0153Judging\u0153, \u0153id\u0153: \u0153Judging-harness\u0153, \u0153name\u0153: \u0153batch\u0153, \u0153output_types\u0153: [\u0153JSON\u0153]}",
+        "target": "ResultValidation-harness",
+        "targetHandle": "{\u0153fieldName\u0153: \u0153reviewed\u0153, \u0153id\u0153: \u0153ResultValidation-harness\u0153, \u0153inputTypes\u0153: [\u0153Data\u0153, \u0153JSON\u0153], \u0153type\u0153: \u0153FieldTypes.OTHER\u0153}"
+      }
+    ],
+    "nodes": [
+      {
+        "data": {
+          "id": "Preparation-harness",
+          "node": {
+            "base_classes": [
+              "JSON"
+            ],
+            "beta": false,
+            "conditional_paths": [],
+            "custom_fields": {},
+            "display_name": "Prepare Outputs",
+            "documentation": "",
+            "edited": false,
+            "field_order": [],
+            "frozen": false,
+            "legacy": false,
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Prepared items",
+                "group_outputs": false,
+                "method": "process",
+                "name": "batch",
+                "selected": "JSON",
+                "tool_mode": true,
+                "types": [
+                  "JSON"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "api_editable": false,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "import json\nfrom typing import ClassVar\n\nfrom lfx.custom import Component\nfrom lfx.io import MultilineInput, Output\nfrom lfx.schema import Data\n\nfrom bodhan_eval.stages import prepare\n\n\nclass Preparation(Component):\n    name = \"Preparation\"\n    display_name = \"Prepare Outputs\"\n    inputs: ClassVar = [\n        MultilineInput(name=\"rows_json\", display_name=\"Detection batch\")\n    ]\n    outputs: ClassVar = [\n        Output(name=\"batch\", display_name=\"Prepared items\", method=\"process\")\n    ]\n\n    async def process(self) -> Data:\n        return Data(data={\"items\": prepare(json.loads(self.rows_json))})\n"
+              },
+              "rows_json": {
+                "_input_type": "MultilineInput",
+                "advanced": false,
+                "ai_enabled": false,
+                "api_editable": false,
+                "copy_field": false,
+                "display_name": "Detection batch",
+                "dynamic": false,
+                "info": "",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "multiline": true,
+                "name": "rows_json",
+                "override_skip": false,
+                "password": false,
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "track_in_telemetry": false,
+                "type": "str",
+                "value": ""
+              }
+            },
+            "tool_mode": false
+          },
+          "type": "Preparation"
+        },
+        "id": "Preparation-harness",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "DeterministicChecks-harness",
+          "node": {
+            "base_classes": [
+              "JSON"
+            ],
+            "beta": false,
+            "conditional_paths": [],
+            "custom_fields": {},
+            "display_name": "Run Deterministic Checks",
+            "documentation": "",
+            "edited": false,
+            "field_order": [],
+            "frozen": false,
+            "legacy": false,
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Deterministic evidence",
+                "group_outputs": false,
+                "method": "process",
+                "name": "batch",
+                "selected": "JSON",
+                "tool_mode": true,
+                "types": [
+                  "JSON"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "api_editable": false,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from typing import ClassVar\n\nfrom lfx.custom import Component\nfrom lfx.io import DataInput, Output\nfrom lfx.schema import Data\n\nfrom bodhan_eval.stages import deterministic\n\n\nclass DeterministicChecks(Component):\n    name = \"DeterministicChecks\"\n    display_name = \"Run Deterministic Checks\"\n    inputs: ClassVar = [DataInput(name=\"prepared\", display_name=\"Prepared items\")]\n    outputs: ClassVar = [\n        Output(name=\"batch\", display_name=\"Deterministic evidence\", method=\"process\")\n    ]\n\n    async def process(self) -> Data:\n        return Data(data={\"items\": deterministic(self.prepared.data[\"items\"])})\n"
+              },
+              "prepared": {
+                "_input_type": "JSONInput",
+                "advanced": false,
+                "api_editable": false,
+                "display_name": "Prepared items",
+                "dynamic": false,
+                "info": "",
+                "input_types": [
+                  "Data",
+                  "JSON"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "prepared",
+                "override_skip": false,
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "track_in_telemetry": false,
+                "type": "other",
+                "value": ""
+              }
+            },
+            "tool_mode": false
+          },
+          "type": "DeterministicChecks"
+        },
+        "id": "DeterministicChecks-harness",
+        "position": {
+          "x": 350,
+          "y": 0
+        },
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "ModelEvidence-harness",
+          "node": {
+            "base_classes": [
+              "JSON"
+            ],
+            "beta": false,
+            "conditional_paths": [],
+            "custom_fields": {},
+            "display_name": "Gather Model Evidence",
+            "documentation": "",
+            "edited": false,
+            "field_order": [],
+            "frozen": false,
+            "legacy": false,
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Model evidence",
+                "group_outputs": false,
+                "method": "process",
+                "name": "batch",
+                "selected": "JSON",
+                "tool_mode": true,
+                "types": [
+                  "JSON"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "template": {
+              "_type": "Component",
+              "checked": {
+                "_input_type": "JSONInput",
+                "advanced": false,
+                "api_editable": false,
+                "display_name": "Deterministic evidence",
+                "dynamic": false,
+                "info": "",
+                "input_types": [
+                  "Data",
+                  "JSON"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "checked",
+                "override_skip": false,
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "track_in_telemetry": false,
+                "type": "other",
+                "value": ""
+              },
+              "code": {
+                "advanced": true,
+                "api_editable": false,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from typing import ClassVar\n\nfrom lfx.custom import Component\nfrom lfx.io import DataInput, Output\nfrom lfx.schema import Data\n\nfrom bodhan_eval.stages import model_evidence\n\n\nclass ModelEvidence(Component):\n    name = \"ModelEvidence\"\n    display_name = \"Gather Model Evidence\"\n    inputs: ClassVar = [\n        DataInput(name=\"checked\", display_name=\"Deterministic evidence\")\n    ]\n    outputs: ClassVar = [\n        Output(name=\"batch\", display_name=\"Model evidence\", method=\"process\")\n    ]\n\n    async def process(self) -> Data:\n        return Data(data={\"items\": model_evidence(self.checked.data[\"items\"])})\n"
+              }
+            },
+            "tool_mode": false
+          },
+          "type": "ModelEvidence"
+        },
+        "id": "ModelEvidence-harness",
+        "position": {
+          "x": 700,
+          "y": 0
+        },
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "Judging-harness",
+          "node": {
+            "base_classes": [
+              "JSON"
+            ],
+            "beta": false,
+            "conditional_paths": [],
+            "custom_fields": {},
+            "display_name": "Judge Number Findings",
+            "documentation": "",
+            "edited": false,
+            "field_order": [],
+            "frozen": false,
+            "legacy": false,
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Reviewed evidence",
+                "group_outputs": false,
+                "method": "process",
+                "name": "batch",
+                "selected": "JSON",
+                "tool_mode": true,
+                "types": [
+                  "JSON"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "api_editable": false,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from typing import ClassVar\n\nfrom lfx.custom import Component\nfrom lfx.io import DataInput, Output\nfrom lfx.schema import Data\n\nfrom bodhan_eval.stages import judging\n\n\nclass Judging(Component):\n    name = \"Judging\"\n    display_name = \"Judge Number Findings\"\n    inputs: ClassVar = [DataInput(name=\"evidence\", display_name=\"Model evidence\")]\n    outputs: ClassVar = [\n        Output(name=\"batch\", display_name=\"Reviewed evidence\", method=\"process\")\n    ]\n\n    async def process(self) -> Data:\n        return Data(data={\"items\": judging(self.evidence.data[\"items\"])})\n"
+              },
+              "evidence": {
+                "_input_type": "JSONInput",
+                "advanced": false,
+                "api_editable": false,
+                "display_name": "Model evidence",
+                "dynamic": false,
+                "info": "",
+                "input_types": [
+                  "Data",
+                  "JSON"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "evidence",
+                "override_skip": false,
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "track_in_telemetry": false,
+                "type": "other",
+                "value": ""
+              }
+            },
+            "tool_mode": false
+          },
+          "type": "Judging"
+        },
+        "id": "Judging-harness",
+        "position": {
+          "x": 1050,
+          "y": 0
+        },
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "ResultValidation-harness",
+          "node": {
+            "base_classes": [
+              "JSON"
+            ],
+            "beta": false,
+            "conditional_paths": [],
+            "custom_fields": {},
+            "display_name": "Validate Result Spans",
+            "documentation": "",
+            "edited": false,
+            "field_order": [],
+            "frozen": false,
+            "legacy": false,
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Validated results",
+                "group_outputs": false,
+                "method": "process",
+                "name": "results",
+                "selected": "JSON",
+                "tool_mode": true,
+                "types": [
+                  "JSON"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "api_editable": false,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from typing import ClassVar\n\nfrom lfx.custom import Component\nfrom lfx.io import DataInput, Output\nfrom lfx.schema import Data\n\nfrom bodhan_eval.stages import validate_results\n\n\nclass ResultValidation(Component):\n    name = \"ResultValidation\"\n    display_name = \"Validate Result Spans\"\n    inputs: ClassVar = [DataInput(name=\"reviewed\", display_name=\"Reviewed evidence\")]\n    outputs: ClassVar = [\n        Output(name=\"results\", display_name=\"Validated results\", method=\"process\")\n    ]\n\n    async def process(self) -> Data:\n        return Data(data={\"items\": validate_results(self.reviewed.data[\"items\"])})\n"
+              },
+              "reviewed": {
+                "_input_type": "JSONInput",
+                "advanced": false,
+                "api_editable": false,
+                "display_name": "Reviewed evidence",
+                "dynamic": false,
+                "info": "",
+                "input_types": [
+                  "Data",
+                  "JSON"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "reviewed",
+                "override_skip": false,
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "track_in_telemetry": false,
+                "type": "other",
+                "value": ""
+              }
+            },
+            "tool_mode": false
+          },
+          "type": "ResultValidation"
+        },
+        "id": "ResultValidation-harness",
+        "position": {
+          "x": 1400,
+          "y": 0
+        },
+        "type": "genericNode"
+      }
+    ]
+  },
+  "description": "Evaluate supplied or generated outputs.",
+  "id": "9159405e-2b03-4d12-b243-58782d0fd987",
+  "is_component": false,
+  "name": "Bodhan Quality Harness"
+}

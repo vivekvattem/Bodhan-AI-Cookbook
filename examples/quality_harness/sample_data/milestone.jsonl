@@ -1,0 +1,10 @@
+{"id":"hi-clean","source":"The sample weighs 25 kg.","lang":"hi","translation":"२५ kg","audio":"audio/fixture.wav","labels":[],"annotation_source":"take-home-fixture"}
+{"id":"hi-changed","source":"The parcel weighs 25 kg.","lang":"hi","translation":"३५ kg","reference":"२५ kg","labels":[{"type":"number","severity":"major","span":[0,2],"field":"translation","annotator":"take-home-fixture"}],"injection":{"operation":"replace decimal value"}}
+{"id":"bn-changed","source":"The track is 12 km long.","lang":"bn","translation":"১৫ km"}
+{"id":"ta-decimal","source":"The vessel holds 2.50 L.","lang":"ta","translation":"௨.௫ L"}
+{"id":"ur-changed","source":"The road is 40 km long.","lang":"ur","translation":"۴۵ km"}
+{"id":"bad-row", "source":
+{"id":"hi-ambiguous","source":"The shipment weighs 1,200 kg.","lang":"hi","translation":"१.२०० kg"}
+{"id":"bn-missing","source":"The box weighs 7 kg.","lang":"bn"}
+{"id":"ta-missing-audio","source":"The flask holds 5 L.","lang":"ta","translation":"௫ L","audio":"audio/missing.wav"}
+{"id":"hi-no-numbers","source":"No count is listed.","lang":"hi","translation":"[fixture text]"}
