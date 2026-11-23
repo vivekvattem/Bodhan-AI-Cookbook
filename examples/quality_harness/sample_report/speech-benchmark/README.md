@@ -1,0 +1,11 @@
+# Speech runtime and coverage diagnostic
+
+This is a previously inspected development workload, not a held-out accuracy test. It contains 200 rows in Hindi, Tamil and Bengali: the 120 demo rows plus 80 related punctuation-modified repeats. The workload has eight underlying English source groups. The run uses warm caches and disables judge dispatch, so it does not establish the assignment's cold, complete 200-item end-to-end runtime target.
+
+The original run completed in 2,187.045 seconds (36 minutes 27 seconds). Synthesis and audio signal checks evaluated 200/200 items. Transcription evaluated 32/200; 167 checks were unavailable after rate limiting and one audio clip exceeded the 30-second transcription limit. Alignment was inconclusive for the 32 transcribed items and unavailable for the other 168. The 200 measured clips totaled 2,733.909 seconds, with durations from 5.888 to 30.549 seconds.
+
+A single separately capped retry used saved audio for the 167 rate-limited items. It completed 16 transcriptions, then the endpoint paused after three more HTTP 429 attempts; 151 remained unavailable. Combined coverage was 48/200 transcribed, 48 inconclusive alignments, and 152 unavailable (151 rate-limited and one over 30 seconds). The retry took 50.297 seconds; its 167 synthesis checks were skipped because the WAVs were supplied.
+
+The original run made 235 Bodhan attempts, with 222 successful; estimated new known spend was ₹12.53244 and ₹0.4696 was held for 13 failed-attempt charges that remain unknown. Its 210 cache hits comprised 74 synthesis responses, 120 back-translations and 16 transcriptions. The retry made 19 attempts (16 successful), with 167 cached back-translations, ₹0.34 estimated new known spend, and ₹0.06 held for three failed attempts. Combined estimated new known spend was ₹12.87244 with ₹0.5296 uncertain exposure; reservations are not invoices. Judge dispatch was disabled in both runs and had no new cost.
+
+The original and retry are separate reports and invocations; the retry did not rewrite the original report. No threshold was tuned from these inspected data. Generated audio and caches are not in Git.

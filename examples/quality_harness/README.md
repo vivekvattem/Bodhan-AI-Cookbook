@@ -97,6 +97,8 @@ The 120-item [text demo](data/README.md) is previously inspected development dat
 
 A later [live text evaluation](sample_report/live-evaluation/summary.md) used cached and new Bodhan back-translations plus Groq judgment. It records incomplete checks and unknown failed-attempt billing; these previously inspected data do not establish held-out accuracy.
 
+The [speech runtime and coverage diagnostic](sample_report/speech-benchmark/README.md) describes a 200-row warm-cache run and its rate-limited transcription retry. The workload contains related repeats and does not establish a complete 200-item end-to-end runtime target.
+
 Reports include `summary.md`, `summary.json`, `items.jsonl`, `calibration.json`, and `diff.md` when a baseline is supplied. Exact requests are cached, with bounded retries and explicit budget admission. Invocation telemetry is stored separately from stable reports. Use `--cache-only --replay-from <original-report>` with the same cache and detection settings to reproduce a saved run.
 
 ## Limitations

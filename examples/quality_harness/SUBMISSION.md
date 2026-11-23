@@ -37,9 +37,9 @@ The subsequent [120-item text run](sample_report/live-evaluation/summary.md) com
 - **Results:** Use the scoped values above and [sample report](sample_report/summary.md); include check coverage.
 - **Demo video:** Add the user-recorded accessible link.
 - **Trade-offs:** Sparse human calibration, previously inspected development data, inconclusive checks, fallible transcription and missing reference/wrong-language checks.
-- **Cost and runtime:** Pending live per-100-item and 200-item speech-inclusive measurements; do not equate cached replay cost with live cost.
+- **Cost and runtime:** See the [200-row warm-cache speech diagnostic](sample_report/speech-benchmark/README.md). Recognition and the judge were incomplete, so the full end-to-end 200-item runtime target remains unverified. Do not equate cached replay cost with live cost.
 - **AI assistance:** Describe the actual tools used and their contribution.
 
 ## Remaining verification
 
-Verify setup from a clean clone with the pinned dependencies, reproduce reports and replay, validate provider credentials and budget, run a fresh human-reviewed source-disjoint evaluation, perform an independent speech listening review, and measure runtime/cost with speech. The assignment requires generated audio to stay out of Git and be linked from the README; an accessible hosted-audio link is still pending. Root `make check` has reproduced an unrelated AndroidSpeak recipe structure failure; retain the exact test output and commit used when reporting it. Check the final commit for secrets and generated audio before the user submits.
+Verify setup from a clean clone with the pinned dependencies, reproduce reports and replay, validate provider credentials and budget, run a fresh human-reviewed source-disjoint evaluation, perform an independent speech listening review, and measure complete end-to-end runtime/cost with speech. The assignment requires generated audio to stay out of Git and be linked from the README; an accessible hosted-audio link is still pending. Root `make check` has reproduced an unrelated AndroidSpeak recipe structure failure; retain the exact test output and commit used when reporting it. Check the final commit for secrets and generated audio before the user submits.
