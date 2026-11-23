@@ -104,8 +104,8 @@ def load_dataset(path: Path, languages: set[str]):
     return rows
 
 
-def load_calibration(path: Path):
-    labels, duplicates = {}, set()
+def load_calibration(path: Path, *, include_records=False):
+    labels, records, duplicates = {}, {}, set()
     invalid = 0
     with path.open("rb") as source:
         for raw in source:
@@ -123,7 +123,9 @@ def load_calibration(path: Path):
             if key in labels or key in duplicates:
                 duplicates.add(key)
                 labels.pop(key, None)
+                records.pop(key, None)
                 invalid += 1
                 continue
             labels[key] = data["labels"]
-    return labels, invalid
+            records[key] = data
+    return (labels, invalid, records) if include_records else (labels, invalid)

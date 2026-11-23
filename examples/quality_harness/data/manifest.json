@@ -1,0 +1,36 @@
+{
+  "base_translation_review": "pending; clean means no injection, not certified correct",
+  "files_sha256": {
+    "base_translations.jsonl": "7d8e3fdc1af1271f8bac47212595708a9cb7885e753dd57adde1eb6f201567e2",
+    "calibration.jsonl": "eca8abf51d677452cb293a69aa2a90fd6ecc2feac69bbb081852e7164a0fbd76",
+    "calibration_labels.jsonl": "8a10f75ecf56a19879bafd5ffc42652921857b911fcfa8df338179d4c970b407",
+    "demo.jsonl": "433201eb2e819a87f06e26b1e3c0104eab2819754d43a081ecaa25f7a4146e29",
+    "evaluation.jsonl": "ef5d59d589a18855d87aa431c55c6bb889b998f3bcdadf8222e73cf9d8e3ba31",
+    "evaluation_labels.jsonl": "93f95ec9d5ad5d9df9ac364e6e5cd1f4a291e72844c564a60241fbc015c04395",
+    "ground_truth.jsonl": "b19894781aa4206b260481a105c5fd8c7ff60d9ec99a099d23c126378c003164",
+    "sources.jsonl": "85f69c637f572190f1e209a10bfdf0aabacb625339ed0da908a892a4435b72f3"
+  },
+  "human_annotations": 0,
+  "items": 120,
+  "languages": [
+    "hi",
+    "ta",
+    "bn"
+  ],
+  "operators": {
+    "clean": 24,
+    "digit_change": 24,
+    "format_damage": 24,
+    "omission": 24,
+    "term_swap": 24
+  },
+  "seed": 20261122,
+  "source_groups": 8,
+  "source_material": "Original synthetic English educational passages; see README.md",
+  "splits": {
+    "calibration": 30,
+    "evaluation": 90
+  },
+  "threshold_tuning": "not performed",
+  "version": 1
+}

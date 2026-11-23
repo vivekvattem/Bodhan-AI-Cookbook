@@ -18,14 +18,14 @@
               "Data",
               "JSON"
             ],
-            "type": "FieldTypes.OTHER"
+            "type": "other"
           }
         },
         "id": "Preparation-harness--DeterministicChecks-harness",
         "source": "Preparation-harness",
-        "sourceHandle": "{\u0153dataType\u0153: \u0153Preparation\u0153, \u0153id\u0153: \u0153Preparation-harness\u0153, \u0153name\u0153: \u0153batch\u0153, \u0153output_types\u0153: [\u0153JSON\u0153]}",
+        "sourceHandle": "{\u0153dataType\u0153:\u0153Preparation\u0153,\u0153id\u0153:\u0153Preparation-harness\u0153,\u0153name\u0153:\u0153batch\u0153,\u0153output_types\u0153:[\u0153JSON\u0153]}",
         "target": "DeterministicChecks-harness",
-        "targetHandle": "{\u0153fieldName\u0153: \u0153prepared\u0153, \u0153id\u0153: \u0153DeterministicChecks-harness\u0153, \u0153inputTypes\u0153: [\u0153Data\u0153, \u0153JSON\u0153], \u0153type\u0153: \u0153FieldTypes.OTHER\u0153}"
+        "targetHandle": "{\u0153fieldName\u0153:\u0153prepared\u0153,\u0153id\u0153:\u0153DeterministicChecks-harness\u0153,\u0153inputTypes\u0153:[\u0153Data\u0153,\u0153JSON\u0153],\u0153type\u0153:\u0153other\u0153}"
       },
       {
         "data": {
@@ -44,14 +44,14 @@
               "Data",
               "JSON"
             ],
-            "type": "FieldTypes.OTHER"
+            "type": "other"
           }
         },
         "id": "DeterministicChecks-harness--ModelEvidence-harness",
         "source": "DeterministicChecks-harness",
-        "sourceHandle": "{\u0153dataType\u0153: \u0153DeterministicChecks\u0153, \u0153id\u0153: \u0153DeterministicChecks-harness\u0153, \u0153name\u0153: \u0153batch\u0153, \u0153output_types\u0153: [\u0153JSON\u0153]}",
+        "sourceHandle": "{\u0153dataType\u0153:\u0153DeterministicChecks\u0153,\u0153id\u0153:\u0153DeterministicChecks-harness\u0153,\u0153name\u0153:\u0153batch\u0153,\u0153output_types\u0153:[\u0153JSON\u0153]}",
         "target": "ModelEvidence-harness",
-        "targetHandle": "{\u0153fieldName\u0153: \u0153checked\u0153, \u0153id\u0153: \u0153ModelEvidence-harness\u0153, \u0153inputTypes\u0153: [\u0153Data\u0153, \u0153JSON\u0153], \u0153type\u0153: \u0153FieldTypes.OTHER\u0153}"
+        "targetHandle": "{\u0153fieldName\u0153:\u0153checked\u0153,\u0153id\u0153:\u0153ModelEvidence-harness\u0153,\u0153inputTypes\u0153:[\u0153Data\u0153,\u0153JSON\u0153],\u0153type\u0153:\u0153other\u0153}"
       },
       {
         "data": {
@@ -70,14 +70,14 @@
               "Data",
               "JSON"
             ],
-            "type": "FieldTypes.OTHER"
+            "type": "other"
           }
         },
         "id": "ModelEvidence-harness--Judging-harness",
         "source": "ModelEvidence-harness",
-        "sourceHandle": "{\u0153dataType\u0153: \u0153ModelEvidence\u0153, \u0153id\u0153: \u0153ModelEvidence-harness\u0153, \u0153name\u0153: \u0153batch\u0153, \u0153output_types\u0153: [\u0153JSON\u0153]}",
+        "sourceHandle": "{\u0153dataType\u0153:\u0153ModelEvidence\u0153,\u0153id\u0153:\u0153ModelEvidence-harness\u0153,\u0153name\u0153:\u0153batch\u0153,\u0153output_types\u0153:[\u0153JSON\u0153]}",
         "target": "Judging-harness",
-        "targetHandle": "{\u0153fieldName\u0153: \u0153evidence\u0153, \u0153id\u0153: \u0153Judging-harness\u0153, \u0153inputTypes\u0153: [\u0153Data\u0153, \u0153JSON\u0153], \u0153type\u0153: \u0153FieldTypes.OTHER\u0153}"
+        "targetHandle": "{\u0153fieldName\u0153:\u0153evidence\u0153,\u0153id\u0153:\u0153Judging-harness\u0153,\u0153inputTypes\u0153:[\u0153Data\u0153,\u0153JSON\u0153],\u0153type\u0153:\u0153other\u0153}"
       },
       {
         "data": {
@@ -96,14 +96,14 @@
               "Data",
               "JSON"
             ],
-            "type": "FieldTypes.OTHER"
+            "type": "other"
           }
         },
         "id": "Judging-harness--ResultValidation-harness",
         "source": "Judging-harness",
-        "sourceHandle": "{\u0153dataType\u0153: \u0153Judging\u0153, \u0153id\u0153: \u0153Judging-harness\u0153, \u0153name\u0153: \u0153batch\u0153, \u0153output_types\u0153: [\u0153JSON\u0153]}",
+        "sourceHandle": "{\u0153dataType\u0153:\u0153Judging\u0153,\u0153id\u0153:\u0153Judging-harness\u0153,\u0153name\u0153:\u0153batch\u0153,\u0153output_types\u0153:[\u0153JSON\u0153]}",
         "target": "ResultValidation-harness",
-        "targetHandle": "{\u0153fieldName\u0153: \u0153reviewed\u0153, \u0153id\u0153: \u0153ResultValidation-harness\u0153, \u0153inputTypes\u0153: [\u0153Data\u0153, \u0153JSON\u0153], \u0153type\u0153: \u0153FieldTypes.OTHER\u0153}"
+        "targetHandle": "{\u0153fieldName\u0153:\u0153reviewed\u0153,\u0153id\u0153:\u0153ResultValidation-harness\u0153,\u0153inputTypes\u0153:[\u0153Data\u0153,\u0153JSON\u0153],\u0153type\u0153:\u0153other\u0153}"
       }
     ],
     "nodes": [
@@ -406,7 +406,7 @@
             "beta": false,
             "conditional_paths": [],
             "custom_fields": {},
-            "display_name": "Judge Number Findings",
+            "display_name": "Judge Translation",
             "documentation": "",
             "edited": false,
             "field_order": [],
@@ -451,7 +451,7 @@
                 "show": true,
                 "title_case": false,
                 "type": "code",
-                "value": "from typing import ClassVar\n\nfrom lfx.custom import Component\nfrom lfx.io import DataInput, Output\nfrom lfx.schema import Data\n\nfrom bodhan_eval.stages import judging\n\n\nclass Judging(Component):\n    name = \"Judging\"\n    display_name = \"Judge Number Findings\"\n    inputs: ClassVar = [DataInput(name=\"evidence\", display_name=\"Model evidence\")]\n    outputs: ClassVar = [\n        Output(name=\"batch\", display_name=\"Reviewed evidence\", method=\"process\")\n    ]\n\n    async def process(self) -> Data:\n        return Data(data={\"items\": judging(self.evidence.data[\"items\"])})\n"
+                "value": "from typing import ClassVar\n\nfrom lfx.custom import Component\nfrom lfx.io import DataInput, Output\nfrom lfx.schema import Data\n\nfrom bodhan_eval.stages import judging\n\n\nclass Judging(Component):\n    name = \"Judging\"\n    display_name = \"Judge Translation\"\n    inputs: ClassVar = [DataInput(name=\"evidence\", display_name=\"Model evidence\")]\n    outputs: ClassVar = [\n        Output(name=\"batch\", display_name=\"Reviewed evidence\", method=\"process\")\n    ]\n\n    async def process(self) -> Data:\n        return Data(data={\"items\": judging(self.evidence.data[\"items\"])})\n"
               },
               "evidence": {
                 "_input_type": "JSONInput",

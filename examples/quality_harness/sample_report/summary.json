@@ -1,0 +1,156 @@
+{
+  "calibration": "descriptive_only",
+  "categories": {
+    "addition": {
+      "checks": {
+        "unavailable": 120
+      },
+      "flags": 0
+    },
+    "format": {
+      "checks": {
+        "latex": {
+          "evaluated": 60,
+          "skipped": 60
+        },
+        "markdown_table": {
+          "evaluated": 60,
+          "skipped": 60
+        }
+      },
+      "flags": 24
+    },
+    "mistranslation": {
+      "checks": {
+        "unavailable": 120
+      },
+      "flags": 0
+    },
+    "number": {
+      "checks": {
+        "evaluated": 12,
+        "inconclusive": 108
+      },
+      "flags": 12
+    },
+    "omission": {
+      "checks": {
+        "unavailable": 120
+      },
+      "flags": 0
+    },
+    "speech_clipping": {
+      "checks": {
+        "skipped": 120
+      },
+      "flags": 0
+    },
+    "speech_silence": {
+      "checks": {
+        "skipped": 120
+      },
+      "flags": 0
+    },
+    "term_entity": {
+      "checks": {
+        "unavailable": 120
+      },
+      "flags": 0
+    }
+  },
+  "checks": {
+    "audio_signal": {
+      "skipped": 120
+    },
+    "back_translation": {
+      "evaluated": 110,
+      "unavailable": 10
+    },
+    "judge": {
+      "skipped": 120
+    },
+    "latex": {
+      "evaluated": 60,
+      "skipped": 60
+    },
+    "markdown_table": {
+      "evaluated": 60,
+      "skipped": 60
+    },
+    "number": {
+      "evaluated": 12,
+      "inconclusive": 108
+    },
+    "other_translation_checks": {
+      "pending": 120
+    },
+    "reference_score": {
+      "skipped": 120
+    },
+    "semantic_translation": {
+      "unavailable": 120
+    },
+    "speech_alignment": {
+      "skipped": 120
+    },
+    "speech_generation": {
+      "skipped": 120
+    },
+    "transcription": {
+      "skipped": 120
+    },
+    "translation_generation": {
+      "skipped": 120
+    }
+  },
+  "items": {
+    "evaluated": 36,
+    "failed": 0,
+    "inconclusive": 84,
+    "skipped": 0,
+    "unavailable": 0
+  },
+  "languages": {
+    "bn": {
+      "evaluated": 12,
+      "failed": 0,
+      "flags": 12,
+      "inconclusive": 28,
+      "skipped": 0,
+      "unavailable": 0
+    },
+    "hi": {
+      "evaluated": 12,
+      "failed": 0,
+      "flags": 12,
+      "inconclusive": 28,
+      "skipped": 0,
+      "unavailable": 0
+    },
+    "ta": {
+      "evaluated": 12,
+      "failed": 0,
+      "flags": 12,
+      "inconclusive": 28,
+      "skipped": 0,
+      "unavailable": 0
+    }
+  },
+  "mode": "hosted",
+  "original_evaluation_cost": {
+    "estimated_known_inr": "0.0929",
+    "providers": {
+      "bodhan": {
+        "estimated_known_inr": "0.0929",
+        "unpriced_requests": 0
+      },
+      "judge": {
+        "estimated_known_inr": "0",
+        "unpriced_requests": 0
+      }
+    },
+    "rates": "bodhan-published-v1",
+    "unpriced_requests": 0
+  },
+  "rows": 120
+}

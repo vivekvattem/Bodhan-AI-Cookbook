@@ -1,13 +1,13 @@
 import json
 
-from lfx.graph import Graph
-
 from bodhan_eval.components.deterministic import DeterministicChecks
 from bodhan_eval.components.judging import Judging
 from bodhan_eval.components.model_evidence import ModelEvidence
 from bodhan_eval.components.preparation import Preparation
 from bodhan_eval.components.validation import ResultValidation
 from bodhan_eval.flow import FIRST_NODE, FLOW, LAST_NODE
+from lfx.graph import Graph
+from lfx.inputs.input_mixin import FieldTypes
 
 
 def main():
@@ -41,8 +41,13 @@ def main():
         node["type"] = "genericNode"
     for edge in export["data"]["edges"]:
         edge["id"] = f"{edge['source']}--{edge['target']}"
+        # The editor matches these identifiers to its JSON.stringify output.
+        target_handle = edge["data"]["targetHandle"]
+        target_handle["type"] = FieldTypes[target_handle["type"].removeprefix("FieldTypes.")].value
         for handle in ("sourceHandle", "targetHandle"):
-            edge[handle] = json.dumps(edge["data"][handle]).replace('"', "œ")
+            edge[handle] = json.dumps(
+                edge["data"][handle], separators=(",", ":")
+            ).replace('"', "œ")
     FLOW.write_text(
         json.dumps(export, sort_keys=True, indent=2) + "\n", encoding="utf-8"
     )

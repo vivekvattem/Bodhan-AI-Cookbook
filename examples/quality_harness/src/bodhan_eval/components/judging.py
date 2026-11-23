@@ -9,7 +9,7 @@ from bodhan_eval.stages import judging
 
 class Judging(Component):
     name = "Judging"
-    display_name = "Judge Number Findings"
+    display_name = "Judge Translation"
     inputs: ClassVar = [DataInput(name="evidence", display_name="Model evidence")]
     outputs: ClassVar = [
         Output(name="batch", display_name="Reviewed evidence", method="process")

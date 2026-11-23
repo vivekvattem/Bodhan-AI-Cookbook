@@ -1,6 +1,6 @@
 # Bodhan Quality Harness
 
-This milestone evaluates decimal numerals in supplied or generated translations. The Python CLI runs a five-stage Langflow export headlessly and reports evidence, coverage, and model call costs. The [implementation plan](PLAN.md) covers later stages.
+The Python CLI runs a five-stage Langflow export headlessly to evaluate supplied or generated translation and speech outputs. It reports evidence, check coverage, and estimated model costs. The [architecture guide](ARCHITECTURE.md) explains the current design. The [implementation plan](PLAN.md) covers later stages.
 
 ## Setup
 
@@ -11,7 +11,20 @@ python3.11 -m venv .venv && .venv/bin/python -m pip install .
 source .venv/bin/activate
 ```
 
-For hosted checks, set the model-specific variables in the environment or copy `.env.example` to `.env` in the working directory. The CLI uses the three Bodhan keys and the `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` settings. The generic `BODHAN_API_KEY` field is a Cookbook template placeholder. Missing configuration is reported on the affected check. [Bodhan API reference](https://console.bodhan.ai/api-docs/)
+### Local provider settings
+
+From the Cookbook checkout root, `cd examples/quality_harness`. Keep `.env` in that recipe directory and run the commands below from there. On a fresh checkout, create `.env` by copying `.env.example` once. Paste each value after its `=` in `.env` when it is available.
+
+| Setting | Value |
+| --- | --- |
+| `BODHAN_TRANSLATE_KEY` | Your Indic-Translate key from the Bodhan console |
+| `BODHAN_SPEAK_KEY` | Your Indic-Speak key from the Bodhan console |
+| `BODHAN_TRANSCRIBE_KEY` | Your Indic-Transcribe key from the Bodhan console |
+| `LLM_BASE_URL` | The OpenAI-compatible API base URL from your judge provider, including its API version prefix when applicable |
+| `LLM_MODEL` | The judge model ID from that provider |
+| `LLM_API_KEY` | Your API key from that judge provider |
+
+The CLI reads `.env` from the current working directory, including with `python -I -m bodhan_eval`. Variables already set in the shell take precedence. Missing credentials are reported on affected checks. The generic `BODHAN_API_KEY` entry in `.env.example` is a Cookbook validator placeholder. [Bodhan API reference](https://console.bodhan.ai/api-docs/)
 
 ## Run
 
@@ -34,7 +47,7 @@ python -I -m bodhan_eval --dataset sample_data/provider_smoke.jsonl --langs hi \
   --out outputs/provider-smoke/report --generate --provider-smoke
 ```
 
-`--provider-smoke` accepts one selected non-English item. The graph generates a translation and WAV, back-translates the translation, transcribes the WAV, and requests a three-value JSON verdict. The verdict appears under `provider_smoke_judge` and has no effect on findings. Check the five provider statuses in `items.jsonl`. Full semantic and speech checks remain pending. `report.runtime.json` records the requested model, allowlisted settings, call outcomes and latency, token usage when returned, parsed WAV metadata, and per-request cost estimates or an unknown-cost reason.
+`--provider-smoke` accepts one selected non-English item. The graph generates a translation and WAV, back-translates the translation, transcribes the WAV, and requests a three-value JSON verdict. The verdict appears under `provider_smoke_judge` and has no effect on findings. Check the five provider statuses in `items.jsonl`. Semantic translation and basic speech-signal and transcript-alignment checks are implemented; inspect their individual statuses and limitations. `report.runtime.json` records the requested model, allowlisted settings, call outcomes and latency, token usage when returned, parsed WAV metadata, and per-request cost estimates or an unknown-cost reason.
 
 The uncapped form makes at most one unpriced judge request with a 64-token output limit. Add `--max-cost-inr 1` to apply a total cap. An uncached judge call without a known tariff is then unavailable. A complete warm replay uses `--cache-only` and an output under the same parent directory.
 
@@ -45,7 +58,7 @@ python -I -m bodhan_eval --dataset sample_data/provider_smoke.jsonl --langs hi \
 
 Compare the four report files byte for byte and check the replay telemetry for zero provider calls and zero incremental spend. To check supplied outputs, use a copy of the row with the generated translation and local WAV path and omit `--generate`. Generation checks should show `skipped` and the supplied artifacts should be preserved.
 
-The one-item test suite exercises the production HTTP adapter with mocked responses and verifies replay in an isolated process with network access blocked. The production CLI ran without credentials and reported all five operations unavailable. Actual hosted responses and visual-editor import remain unverified. See [validation notes](VALIDATION.md).
+The one-item test suite exercises the production HTTP adapter with mocked responses and verifies replay in an isolated process with network access blocked. The production CLI ran without credentials and reported all five operations unavailable. Bodhan operations and a small judge smoke were exercised separately; see the validation notes for scope and limitations. See [validation notes](VALIDATION.md).
 
 ### Reproduce the offline fixture
 
@@ -76,19 +89,19 @@ The proof compares `25` with `25` and `35` with `25` after digit folding. Its sa
 
 ## How it works
 
-The CLI validates rows independently and passes only allowlisted content to `src/bodhan_eval/quality_harness.json`. The five nodes prepare outputs, check numerals, gather back-translation and transcription evidence, request a bounded judge verdict for number findings, and validate original spans. The judge verdict is recorded separately. The deterministic candidate supplies the finding and its evidence. Python joins annotations after the graph returns. The export can be regenerated after an editable install with `python tools/export_flow.py`. Visual-editor import is unverified because the editor was unavailable. Headless execution and export validation were tested.
+The CLI validates rows independently and passes allowlisted inputs to the exported Langflow graph. Python modules prepare outputs, run deterministic number and formatting checks, gather Bodhan back-translation and transcription evidence, request semantic judgment, and validate original-text spans. Labels are joined after detection. Audio checks measure silence and clipping; transcript alignment supplies fallible evidence rather than proof of a speech error.
 
-The decimal check folds Unicode decimal digits, compares exact decimal values, and uses half-open Unicode code-point ranges to slice the original texts. A changed value becomes a finding when each text contains one numeral with the same supported explicit unit. Mismatched units, unpaired changes, grouped numbers, fractions, scientific notation, dates, ranges, and attached identifiers are inconclusive. Spelled-out numbers, unit conversion, localized unit words, and semantic correspondence are outside the check. Matching numeric values establish limited numeric coverage.
+The number check folds Unicode decimal digits, retains original code-point spans, and promotes a single residual pair only under its supported safeguards. Ambiguous correspondence, unsupported notation, and incompatible units remain inconclusive. Supported unit conversions are compared. The compact residual-ID judge is not yet connected to provider execution.
 
-The reports are `summary.md`, `summary.json`, `items.jsonl`, `calibration.json`, and `diff.md` when a baseline is supplied. Item counts reflect the number check. Separate check counts show unavailable, skipped, and pending model or quality checks. Calibration gives descriptive item-level number counts when eligible labels exist. Threshold tuning and judge calibration are pending. An unavailable current check cannot resolve a previous number finding.
+The 120-item [text demo](data/README.md) is previously inspected development data derived from eight English sources. [Human calibration labels](data/human_calibration.jsonl) cover 12 reviewed items from two sources; pass the file with `--calibration`. Its results are descriptive and do not justify threshold tuning. A [sample report](sample_report/summary.md) is included with its [calibration details](sample_report/calibration.json); its judge was unavailable. It is not a held-out accuracy measurement.
 
-SQLite stores validated responses under exact request hashes in `.bodhan-eval/` beside the report directory. Generated WAVs there are named by content hash. The report retains the original evaluation cost estimate for the evidence used. The adjacent `<out>.runtime.json` records invocation calls, cache hits, elapsed time, and incremental estimated spend. `--max-cost-inr` reserves known Bodhan costs before uncached dispatch and leaves unpriced hosted judge calls unavailable when a cap is supplied. Requests are serial for this milestone. A complete replay uses cached responses at zero incremental cost. Failed provider calls can be attempted on a later invocation. [Bodhan published rates](https://console.bodhan.ai/#pricing)
+Reports include `summary.md`, `summary.json`, `items.jsonl`, `calibration.json`, and `diff.md` when a baseline is supplied. Exact requests are cached, with bounded retries and explicit budget admission. Invocation telemetry is stored separately from stable reports. Use `--cache-only --replay-from <original-report>` with the same cache and detection settings to reproduce a saved run.
 
 ## Limitations
 
-Live provider access, full translation semantics and speech detectors, audio chunking and formats beyond short PCM WAV, retries and concurrent scheduling, threshold tuning, and the 100-item demo remain pending. The judge supports number review and the separate connectivity check. Long translation responses may hit the milestone’s output cap and are reported as unavailable when the provider indicates truncation.
+The compact residual-ID judge is not integrated. Semantic checks can be unavailable or inconclusive; basic speech alignment is fallible and needs independent listening review. Reference scoring, wrong-language detection, speech formats beyond short PCM WAV, threshold tuning, and the 200-item speech-inclusive runtime target remain unverified or pending. The human-reviewed calibration subset is too small for reliable quality estimates.
 
-The end-to-end tests also run the exact production entry point with missing credentials. To run the Cookbook checks from a Cookbook checkout root, use:
+The end-to-end tests also run the exact production entry point with missing credentials. Run the Cookbook checks from a clean checkout root because its security scanner inspects working-tree files, including ignored `.env` files.
 
 ```bash
 python scripts/validate_recipe.py examples/quality_harness

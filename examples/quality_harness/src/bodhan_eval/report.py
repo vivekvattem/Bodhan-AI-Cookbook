@@ -3,6 +3,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from .semantic import CATEGORIES
+
 ITEM_STATUSES = ("evaluated", "failed", "skipped", "inconclusive", "unavailable")
 
 
@@ -36,6 +38,17 @@ def make_items(rows, results, external):
             result = next(ordered_results)
             item.update(result)
             item["status"] = result["checks"]["number"]["status"]
+            format_statuses = [result["checks"][name]["status"] for name in ("markdown_table", "latex", "audio_signal", "speech_alignment")]
+            if item["flags"] or "evaluated" in format_statuses:
+                item["status"] = "evaluated"
+            elif item["status"] == "skipped" and "inconclusive" in format_statuses:
+                item["status"] = "inconclusive"
+            semantic = result["checks"].get("semantic_translation", {})
+            if not item["flags"]:
+                if semantic.get("status") in {"unavailable", "inconclusive"} and item["status"] != "unavailable":
+                    item["status"] = "inconclusive"
+                elif semantic.get("status") == "evaluated" and item["status"] == "skipped":
+                    item["status"] = "evaluated"
             labels = external.get(row.key, row.labels)
             item["label_status"] = (
                 "absent" if labels is None else "clean" if not labels else "labelled"
@@ -46,7 +59,7 @@ def make_items(rows, results, external):
     return items
 
 
-def calibration(items, labels_by_key, invalid_external, mode):
+def calibration(items, labels_by_key, invalid_external, mode, records=None):
     counts = Counter(
         true_positive=0, false_positive=0, false_negative=0, true_negative=0
     )
@@ -59,12 +72,12 @@ def calibration(items, labels_by_key, invalid_external, mode):
             continue
         annotated += 1
         positive = any(label["type"] == "number" for label in labels)
-        if item["checks"]["number"]["status"] != "evaluated" or (
+        if item.get("checks", {}).get("number", {}).get("status") != "evaluated" or (
             labels and not positive
         ):
             continue
         support += 1
-        predicted = bool(item["flags"])
+        predicted = any(flag["category"] == "number" for flag in item["flags"])
         if positive:
             counts["true_positive" if predicted else "false_negative"] += 1
         else:
@@ -79,6 +92,32 @@ def calibration(items, labels_by_key, invalid_external, mode):
         "judge_calibration": "pending",
         "categories": {},
     }
+    if records:
+        from .metrics import summarize
+
+        evaluated = summarize([item for item in items if "source" in item], list(records.values()))
+        result["reviewed_metrics"] = evaluated
+        result["reviewed_label_provenance"] = {
+            "origins": evaluated["provenance"],
+            "reviewers": sorted({str(record.get("reviewer")) for record in records.values() if record.get("reviewer")}),
+            "scope": "descriptive; thresholds unchanged; sparse samples are not reliable calibration",
+        }
+        if evaluated["labelled_items"]:
+            result["status"] = "descriptive_only"
+            for category, metric in evaluated["categories"].items():
+                result["categories"][category] = {
+                    "true_positive": metric["tp"], "false_positive": metric["fp"],
+                    "false_negative": metric["fn"], "true_negative": metric["tn"],
+                    "precision": metric["precision"], "recall": metric["recall"],
+                    "support": metric["positive_items"], "labelled_items": metric["labelled_items"],
+                    "check_coverage": metric["check_coverage"],
+                    "scope": "item-category; unavailable checks remain in recall denominator",
+                }
+            result["judge_calibration"] = "descriptive_only; no threshold tuning"
+            return result
+        result["status"] = "unavailable"
+        result["reason"] = "no valid reviewed labels resolved against evaluated items"
+        return result
     if not support:
         result["reason"] = "no eligible labelled number evaluations"
         return result
@@ -100,6 +139,12 @@ def counts_for(items):
 
 
 def describe_flag(flag):
+    if flag["check"] == "audio_signal":
+        return f"{flag['category']} · audio {flag['interval_seconds']} seconds · {flag['evidence']['reason']}"
+    if flag["check"] == "semantic_translation":
+        return f"{flag['category']} · {flag['field']} {flag['span']} · {flag['explanation']}"
+    if flag["category"] == "format":
+        return f"{flag['check']} · {flag['evidence']['reason']}"
     expected = flag["evidence"]["source"]
     observed = flag["evidence"]["translation"]
     return (
@@ -125,10 +170,13 @@ def compare_baseline(baseline, items):
         if before["source"] != after["source"]:
             changes["coverage"].append(f"{name} · source changed")
             continue
-        previous, present = before["flags"], after["flags"]
+        previous = [flag for flag in before["flags"] if flag["check"] == "number"]
+        present = [flag for flag in after["flags"] if flag["check"] == "number"]
         old_check = before["checks"].get("number", {})
         new_check = after["checks"].get("number", {})
-        if previous and not present:
+        if old_check.get("policy_version") != new_check.get("policy_version"):
+            changes["coverage"].append(f"{name} · number policy changed; findings are not a like-for-like quality comparison")
+        elif previous and not present:
             source_unit = previous[0]["evidence"]["source"]["unit"]
             if (
                 new_check.get("verdict") == "match"
@@ -159,6 +207,19 @@ def compare_baseline(baseline, items):
             changes["coverage"].append(
                 f"{name} · number coverage {old_check.get('status', 'absent')} to {new_check['status']}"
             )
+        for check_name in ("markdown_table", "latex", "semantic_translation", "audio_signal"):
+            previous = [flag for flag in before["flags"] if flag["check"] == check_name]
+            present = [flag for flag in after["flags"] if flag["check"] == check_name]
+            old = before["checks"].get(check_name, {})
+            new = after["checks"].get(check_name, {})
+            if previous and not present:
+                section = "improved" if new.get("status") == "evaluated" and new.get("verdict") in {"match", "clean"} else "unavailable"
+                changes[section].append(f"{name} · {check_name} · prior {describe_flag(previous[0])} · {new.get('reason', new.get('verdict', 'check absent'))}")
+            elif present and not previous:
+                section = "regressed" if old.get("status") == "evaluated" else "coverage"
+                changes[section].append(f"{name} · new {describe_flag(present[0])}")
+            elif previous != present:
+                changes["changed"].append(f"{name} · {check_name} findings changed")
     sections = ["# Baseline comparison", ""]
     for name in ("improved", "regressed", "changed", "unavailable", "coverage"):
         sections.extend([f"## {name.capitalize()} ({len(changes[name])})", ""])
@@ -187,7 +248,14 @@ def render_summary(items, mode, original_cost, baseline_counts, calibration_resu
             for lang, rows in by_language.items()
         },
         "categories": {
-            "number": {"flags": findings["number"], "checks": dict(checks["number"])}
+            **{category: {"flags": findings[category], "checks": dict(checks["semantic_translation"])} for category in CATEGORIES},
+            "number": {"flags": findings["number"], "checks": dict(checks["number"])},
+            "format": {
+                "flags": findings["format"],
+                "checks": {name: dict(checks[name]) for name in ("markdown_table", "latex")},
+            },
+            "speech_silence": {"flags": findings["speech_silence"], "checks": dict(checks["audio_signal"])},
+            "speech_clipping": {"flags": findings["speech_clipping"], "checks": dict(checks["audio_signal"])},
         },
         "checks": {name: dict(counts) for name, counts in checks.items()},
         "original_evaluation_cost": original_cost,
@@ -209,6 +277,9 @@ def render_summary(items, mode, original_cost, baseline_counts, calibration_resu
         + ", ".join(f"{count} {status}" for status, count in summary["items"].items())
         + ".",
         f"Number findings: {findings['number']}.",
+        f"Format findings: {findings['format']}.",
+        f"Semantic findings: {sum(findings[category] for category in CATEGORIES)}.",
+        f"Speech signal findings: {findings['speech_silence'] + findings['speech_clipping']}.",
         (
             f"Original evaluation cost estimate: ₹{original_cost['estimated_known_inr']} known, "
             f"{original_cost['unpriced_requests']} unpriced or uncertain requests."
@@ -219,7 +290,7 @@ def render_summary(items, mode, original_cost, baseline_counts, calibration_resu
         lines.append(
             f"Baseline regressions: {baseline_counts['regressed']}. See diff.md for examples."
         )
-    lines.extend(["", "## Number findings", ""])
+    lines.extend(["", "## Findings", ""])
     lines.extend(
         f"- {describe_item((item['id'], item['lang']))} · {describe_flag(flag)}"
         for item in items
@@ -228,7 +299,7 @@ def render_summary(items, mode, original_cost, baseline_counts, calibration_resu
     lines.extend(
         [
             "",
-            "This milestone evaluates numeric evidence. Full semantic and speech quality checks are pending.",
+            "Speech transcript mismatches are candidates requiring corroboration. Signal thresholds and judge calibration are pending.",
             "",
         ]
     )

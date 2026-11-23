@@ -1,0 +1,599 @@
+{
+  "annotated_items": 12,
+  "categories": {
+    "addition": {
+      "check_coverage": {
+        "unavailable": 12
+      },
+      "false_negative": 0,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "recall": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 0,
+      "true_negative": 12,
+      "true_positive": 0
+    },
+    "format": {
+      "check_coverage": {
+        "evaluated": 12
+      },
+      "false_negative": 0,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "recall": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 1,
+      "true_negative": 11,
+      "true_positive": 1
+    },
+    "mistranslation": {
+      "check_coverage": {
+        "unavailable": 12
+      },
+      "false_negative": 0,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "recall": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 0,
+      "true_negative": 12,
+      "true_positive": 0
+    },
+    "number": {
+      "check_coverage": {
+        "evaluated": 2,
+        "inconclusive": 10
+      },
+      "false_negative": 0,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 2,
+        "numerator": 2,
+        "value": 1.0
+      },
+      "recall": {
+        "denominator": 2,
+        "numerator": 2,
+        "value": 1.0
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 2,
+      "true_negative": 10,
+      "true_positive": 2
+    },
+    "omission": {
+      "check_coverage": {
+        "unavailable": 12
+      },
+      "false_negative": 2,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "recall": {
+        "denominator": 2,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 2,
+      "true_negative": 10,
+      "true_positive": 0
+    },
+    "speech_clipping": {
+      "check_coverage": {
+        "skipped": 12
+      },
+      "false_negative": 0,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "recall": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 0,
+      "true_negative": 12,
+      "true_positive": 0
+    },
+    "speech_omission": {
+      "check_coverage": {
+        "skipped": 12
+      },
+      "false_negative": 0,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "recall": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 0,
+      "true_negative": 12,
+      "true_positive": 0
+    },
+    "speech_repetition": {
+      "check_coverage": {
+        "skipped": 12
+      },
+      "false_negative": 0,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "recall": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 0,
+      "true_negative": 12,
+      "true_positive": 0
+    },
+    "speech_silence": {
+      "check_coverage": {
+        "skipped": 12
+      },
+      "false_negative": 0,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "recall": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 0,
+      "true_negative": 12,
+      "true_positive": 0
+    },
+    "term_entity": {
+      "check_coverage": {
+        "unavailable": 12
+      },
+      "false_negative": 1,
+      "false_positive": 0,
+      "labelled_items": 12,
+      "precision": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": null
+      },
+      "recall": {
+        "denominator": 1,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "scope": "item-category; unavailable checks remain in recall denominator",
+      "support": 1,
+      "true_negative": 11,
+      "true_positive": 0
+    }
+  },
+  "eligible_number_items": 2,
+  "invalid_external_rows": 0,
+  "judge_calibration": "descriptive_only; no threshold tuning",
+  "mode": "hosted",
+  "reviewed_label_provenance": {
+    "origins": {
+      "human": 12
+    },
+    "reviewers": [
+      "human"
+    ],
+    "scope": "descriptive; thresholds unchanged; sparse samples are not reliable calibration"
+  },
+  "reviewed_metrics": {
+    "categories": {
+      "addition": {
+        "check_coverage": {
+          "unavailable": 12
+        },
+        "fn": 0,
+        "fp": 0,
+        "independent_flagged_sources": 0,
+        "independent_positive_sources": 0,
+        "labelled_items": 12,
+        "positive_items": 0,
+        "precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "tn": 12,
+        "tp": 0
+      },
+      "format": {
+        "check_coverage": {
+          "evaluated": 12
+        },
+        "fn": 0,
+        "fp": 0,
+        "independent_flagged_sources": 1,
+        "independent_positive_sources": 1,
+        "labelled_items": 12,
+        "positive_items": 1,
+        "precision": {
+          "denominator": 1,
+          "numerator": 1,
+          "value": 1.0
+        },
+        "recall": {
+          "denominator": 1,
+          "numerator": 1,
+          "value": 1.0
+        },
+        "tn": 11,
+        "tp": 1
+      },
+      "mistranslation": {
+        "check_coverage": {
+          "unavailable": 12
+        },
+        "fn": 0,
+        "fp": 0,
+        "independent_flagged_sources": 0,
+        "independent_positive_sources": 0,
+        "labelled_items": 12,
+        "positive_items": 0,
+        "precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "tn": 12,
+        "tp": 0
+      },
+      "number": {
+        "check_coverage": {
+          "evaluated": 2,
+          "inconclusive": 10
+        },
+        "fn": 0,
+        "fp": 0,
+        "independent_flagged_sources": 2,
+        "independent_positive_sources": 2,
+        "labelled_items": 12,
+        "positive_items": 2,
+        "precision": {
+          "denominator": 2,
+          "numerator": 2,
+          "value": 1.0
+        },
+        "recall": {
+          "denominator": 2,
+          "numerator": 2,
+          "value": 1.0
+        },
+        "tn": 10,
+        "tp": 2
+      },
+      "omission": {
+        "check_coverage": {
+          "unavailable": 12
+        },
+        "fn": 2,
+        "fp": 0,
+        "independent_flagged_sources": 0,
+        "independent_positive_sources": 2,
+        "labelled_items": 12,
+        "positive_items": 2,
+        "precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "recall": {
+          "denominator": 2,
+          "numerator": 0,
+          "value": 0.0
+        },
+        "tn": 10,
+        "tp": 0
+      },
+      "speech_clipping": {
+        "check_coverage": {
+          "skipped": 12
+        },
+        "fn": 0,
+        "fp": 0,
+        "independent_flagged_sources": 0,
+        "independent_positive_sources": 0,
+        "labelled_items": 12,
+        "positive_items": 0,
+        "precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "tn": 12,
+        "tp": 0
+      },
+      "speech_omission": {
+        "check_coverage": {
+          "skipped": 12
+        },
+        "fn": 0,
+        "fp": 0,
+        "independent_flagged_sources": 0,
+        "independent_positive_sources": 0,
+        "labelled_items": 12,
+        "positive_items": 0,
+        "precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "tn": 12,
+        "tp": 0
+      },
+      "speech_repetition": {
+        "check_coverage": {
+          "skipped": 12
+        },
+        "fn": 0,
+        "fp": 0,
+        "independent_flagged_sources": 0,
+        "independent_positive_sources": 0,
+        "labelled_items": 12,
+        "positive_items": 0,
+        "precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "tn": 12,
+        "tp": 0
+      },
+      "speech_silence": {
+        "check_coverage": {
+          "skipped": 12
+        },
+        "fn": 0,
+        "fp": 0,
+        "independent_flagged_sources": 0,
+        "independent_positive_sources": 0,
+        "labelled_items": 12,
+        "positive_items": 0,
+        "precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "tn": 12,
+        "tp": 0
+      },
+      "term_entity": {
+        "check_coverage": {
+          "unavailable": 12
+        },
+        "fn": 1,
+        "fp": 0,
+        "independent_flagged_sources": 0,
+        "independent_positive_sources": 1,
+        "labelled_items": 12,
+        "positive_items": 1,
+        "precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "value": null
+        },
+        "recall": {
+          "denominator": 1,
+          "numerator": 0,
+          "value": 0.0
+        },
+        "tn": 11,
+        "tp": 0
+      }
+    },
+    "category_accuracy_among_localized_errors": {
+      "denominator": 3,
+      "numerator": 3,
+      "value": 1.0
+    },
+    "category_accuracy_detected_items": {
+      "denominator": 3,
+      "numerator": 3,
+      "value": 1.0
+    },
+    "category_matched_finding_precision": {
+      "denominator": 3,
+      "numerator": 3,
+      "value": 1.0
+    },
+    "checks": {
+      "audio_signal": {
+        "skipped": 120
+      },
+      "back_translation": {
+        "evaluated": 110,
+        "unavailable": 10
+      },
+      "judge": {
+        "skipped": 120
+      },
+      "latex": {
+        "evaluated": 60,
+        "skipped": 60
+      },
+      "markdown_table": {
+        "evaluated": 60,
+        "skipped": 60
+      },
+      "number": {
+        "evaluated": 12,
+        "inconclusive": 108
+      },
+      "other_translation_checks": {
+        "pending": 120
+      },
+      "reference_score": {
+        "skipped": 120
+      },
+      "semantic_translation": {
+        "unavailable": 120
+      },
+      "speech_alignment": {
+        "skipped": 120
+      },
+      "speech_generation": {
+        "skipped": 120
+      },
+      "transcription": {
+        "skipped": 120
+      },
+      "translation_generation": {
+        "skipped": 120
+      }
+    },
+    "clean_false_alarm_rate": {
+      "denominator": 6,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "clean_items_with_incomplete_checks": 6,
+    "definitions": {
+      "affected_location": "only the primary declared affected field/span is scored; supporting context cannot rescue a misplaced finding",
+      "category_accuracy": "correct-category localized errors / localized errors regardless of category; one-to-one matching",
+      "controls": "clean means explicitly empty labels, not absent labels; incomplete checks do not certify correctness",
+      "deletions": "clean-translation spans project through the edit to output boundaries; touching that boundary counts as overlap",
+      "detected_item_category_accuracy": "exact predicted category set / labelled error category set, among error items with any flag",
+      "independence": "distinct exact English source content, not translated or injected variants",
+      "localization": "one-to-one correct-category findings with same-field span overlap / correct-category detected errors",
+      "precision_recall": "item-category pairs; missing or inconclusive checks remain in the end-to-end recall denominator"
+    },
+    "error_detection_recall": {
+      "denominator": 6,
+      "numerator": 3,
+      "value": 0.5
+    },
+    "human_calibration": "not_performed",
+    "independent_clean_sources": 2,
+    "independent_english_sources": 8,
+    "independent_labelled_sources": 2,
+    "invalid_annotations": [],
+    "invalid_labelled_items": 0,
+    "item_statuses": {
+      "evaluated": 36,
+      "inconclusive": 84
+    },
+    "items": 120,
+    "labelled_items": 12,
+    "localization_overlap": {
+      "denominator": 3,
+      "numerator": 3,
+      "value": 1.0
+    },
+    "metric_source_support": {
+      "category_accuracy_among_localized_errors": {
+        "denominator_sources": 2,
+        "numerator_sources": 2
+      },
+      "category_accuracy_detected_items": {
+        "denominator_sources": 2,
+        "numerator_sources": 2
+      },
+      "clean_false_alarm_rate": {
+        "denominator_sources": 2,
+        "numerator_sources": 0
+      },
+      "localization_overlap": {
+        "denominator_sources": 2,
+        "numerator_sources": 2
+      }
+    },
+    "provenance": {
+      "human": 12
+    },
+    "status": "human_label_diagnostic",
+    "threshold_tuning": "not_performed",
+    "unlabelled_flagged_items": 33,
+    "unlabelled_items": 108
+  },
+  "status": "descriptive_only",
+  "threshold_tuning": "pending"
+}

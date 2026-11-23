@@ -9,7 +9,6 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import httpx
-
 from bodhan_eval.cli import main
 from bodhan_eval.models import HostedTransport
 
@@ -71,22 +70,29 @@ class ProviderSmokeTest(unittest.TestCase):
     def mock_http(self, request):
         path = request.url.path
         self.calls.append(path)
-        if path == "/translate":
+        if path == "/v1/chat/completions" and request.url.host == "api.bodhan.ai":
             payload = json.loads(request.content)
             self.assertEqual(request.url.host, "api.bodhan.ai")
             self.assertEqual(
                 request.headers["Authorization"],
                 "Bearer " + MOCK_ENV["BODHAN_TRANSLATE_KEY"],
             )
-            target = payload["target_language"]
+            target = payload["target_language_code"]
             self.assertEqual(
-                payload["text"], "The box weighs 5 kg." if target == "hi" else "५ kg"
+                payload["messages"][0]["content"],
+                "The box weighs 5 kg." if target == "hi" else "५ kg",
             )
             return httpx.Response(
                 200,
                 json={
-                    "translation": "५ kg" if target == "hi" else "The box weighs 5 kg.",
-                    "truncated": False,
+                    "choices": [
+                        {
+                            "finish_reason": "stop",
+                            "message": {
+                                "content": "५ kg" if target == "hi" else "The box weighs 5 kg.",
+                            },
+                        }
+                    ],
                     "usage": {
                         "prompt_tokens": 10,
                         "completion_tokens": 5,
@@ -105,9 +111,7 @@ class ProviderSmokeTest(unittest.TestCase):
             self.assertEqual(payload["model"], "indic-speak")
             self.assertEqual(payload["voice"], "Kavya")
             self.assertEqual(json.loads(payload["instructions"]), {"lang": "hi"})
-            return httpx.Response(
-                200, content=self.wav, headers={"Content-Type": "audio/wav"}
-            )
+            return httpx.Response(200, content=self.wav, headers={"Content-Type": "audio/wav"})
         if path == "/v1/audio/transcriptions":
             self.assertEqual(request.url.host, "api.bodhan.ai")
             self.assertEqual(
@@ -120,9 +124,7 @@ class ProviderSmokeTest(unittest.TestCase):
             self.assertIn(b"\r\n\r\nhi\r\n", request.content)
             return httpx.Response(200, json={"text": "५ kg"})
         self.assertEqual(str(request.url), "https://judge.invalid/v1/chat/completions")
-        self.assertEqual(
-            request.headers["Authorization"], "Bearer " + MOCK_ENV["LLM_API_KEY"]
-        )
+        self.assertEqual(request.headers["Authorization"], "Bearer " + MOCK_ENV["LLM_API_KEY"])
         payload = json.loads(request.content)
         content = json.loads(payload["messages"][1]["content"])
         self.assertEqual(payload["model"], MOCK_ENV["LLM_MODEL"])
@@ -142,11 +144,7 @@ class ProviderSmokeTest(unittest.TestCase):
         )
 
     def run_isolated(self, launch, *args, environment=None):
-        env = {
-            name: os.environ[name]
-            for name in ("PATH", "SYSTEMROOT", "TMPDIR", "TEMP", "TMP")
-            if name in os.environ
-        }
+        env = {name: os.environ[name] for name in ("PATH", "SYSTEMROOT", "TMPDIR", "TEMP", "TMP") if name in os.environ}
         result = subprocess.run(
             [sys.executable, "-I", *launch, *args],
             cwd=self.root,
@@ -177,6 +175,8 @@ class ProviderSmokeTest(unittest.TestCase):
         telemetry = self.read("missing.runtime.json")
         self.assertEqual(telemetry["mode"], "hosted")
         self.assertEqual(telemetry["provider_calls"], 0)
+        self.assertEqual(telemetry["provider_attempts"], 0)
+        self.assertEqual(telemetry["requests"][0]["decision"], "configuration_block")
 
     def test_hosted_wire_mock_and_isolated_network_blocked_replay(self):
         with httpx.Client(transport=httpx.MockTransport(self.mock_http)) as client:
@@ -190,9 +190,9 @@ class ProviderSmokeTest(unittest.TestCase):
         self.assertEqual(
             self.calls,
             [
-                "/translate",
+                "/v1/chat/completions",
                 "/v1/audio/speech",
-                "/translate",
+                "/v1/chat/completions",
                 "/v1/audio/transcriptions",
                 "/v1/chat/completions",
             ],
@@ -202,16 +202,12 @@ class ProviderSmokeTest(unittest.TestCase):
             item["checks"]["provider_smoke_judge"],
             {"status": "evaluated", "verdict": "supports"},
         )
-        self.assertEqual(item["checks"]["speech_quality"]["status"], "pending")
-        self.assertEqual(
-            item["checks"]["other_translation_checks"]["status"], "pending"
-        )
+        self.assertEqual(item["checks"]["audio_signal"]["status"], "inconclusive")
+        self.assertEqual(item["checks"]["other_translation_checks"]["status"], "pending")
         self.assertEqual(item["flags"], [])
         telemetry = self.read("cold.runtime.json")
         requests = {request["purpose"]: request for request in telemetry["requests"]}
-        self.assertEqual(
-            requests["translation_generation"]["usage"]["completion_tokens"], 5
-        )
+        self.assertEqual(requests["translation_generation"]["usage"]["completion_tokens"], 5)
         self.assertEqual(
             requests["speak"]["audio"],
             {
@@ -221,9 +217,7 @@ class ProviderSmokeTest(unittest.TestCase):
                 "bits_per_sample": 16,
             },
         )
-        self.assertEqual(
-            requests["provider_smoke_judge"]["usage"]["completion_tokens"], 7
-        )
+        self.assertEqual(requests["provider_smoke_judge"]["usage"]["completion_tokens"], 7)
         self.assertIsNone(requests["provider_smoke_judge"]["original_estimated_inr"])
         self.assertEqual(telemetry["incremental_unpriced_requests"], 1)
         self.assertEqual(telemetry["provider_calls"], 5)
@@ -261,10 +255,7 @@ class ProviderSmokeTest(unittest.TestCase):
         supplied = self.root / "supplied.jsonl"
         record = json.loads(SAMPLE.read_text(encoding="utf-8"))
         supplied.write_text(
-            json.dumps(
-                {**record, "translation": item["translation"], "audio": audio.name}
-            )
-            + "\n",
+            json.dumps({**record, "translation": item["translation"], "audio": audio.name}) + "\n",
             encoding="utf-8",
         )
         self.run_isolated(
@@ -275,18 +266,13 @@ class ProviderSmokeTest(unittest.TestCase):
         result = self.read("supplied/items.jsonl")
         self.assertEqual(
             supplied.read_text(encoding="utf-8"),
-            json.dumps(
-                {**record, "translation": item["translation"], "audio": audio.name}
-            )
-            + "\n",
+            json.dumps({**record, "translation": item["translation"], "audio": audio.name}) + "\n",
         )
         self.assertEqual(
             (result["translation"], result["audio"], audio.read_bytes()),
             (item["translation"], audio.name, self.wav),
         )
-        self.assertEqual(
-            result["checks"]["translation_generation"]["status"], "skipped"
-        )
+        self.assertEqual(result["checks"]["translation_generation"]["status"], "skipped")
         self.assertEqual(result["checks"]["speech_generation"]["status"], "skipped")
 
     def test_total_cap_blocks_unpriced_judge(self):
@@ -304,3 +290,34 @@ class ProviderSmokeTest(unittest.TestCase):
         check = self.read("capped/items.jsonl")["checks"]["provider_smoke_judge"]
         self.assertEqual(check["status"], "unavailable")
         self.assertIn("unpriced", check["reason"])
+        self.assertEqual(telemetry["requests"][-1]["decision"], "budget_block")
+        self.assertFalse(telemetry["requests"][-1]["dispatch_attempted"])
+
+    def test_failed_judge_replays_observation_and_normal_run_retries(self):
+        def failed_judge(request):
+            if request.url.host == "judge.invalid":
+                return httpx.Response(402)
+            return self.mock_http(request)
+
+        with httpx.Client(transport=httpx.MockTransport(failed_judge)) as client:
+            main(self.cli_args("failed", "--generate"), transport=HostedTransport(MOCK_ENV, client))
+        cold = self.read("failed.runtime.json")
+        self.assertEqual((cold["provider_attempts"], cold["successful_provider_calls"], cold["failed_provider_attempts"]), (5, 4, 1))
+        self.assertEqual(cold["requests"][-1]["decision"], "provider_failure")
+        env = {key: MOCK_ENV[key] for key in ("LLM_BASE_URL", "LLM_MODEL")}
+        self.run_isolated(["-c", BLOCK_NETWORK], *self.cli_args("failed-replay", "--generate", "--cache-only"), environment=env)
+        replay = self.read("failed-replay.runtime.json")
+        self.assertEqual((replay["provider_attempts"], replay["successful_provider_calls"], replay["cache_hits"], replay["unavailable_replays"]), (0, 0, 4, 1))
+        self.assertFalse(replay["requests"][-1]["dispatch_attempted"])
+        self.assertEqual(replay["requests"][-1]["decision"], "failure_replay")
+        for name in REPORTS:
+            self.assertEqual((self.root / "failed" / name).read_bytes(), (self.root / "failed-replay" / name).read_bytes())
+
+        with httpx.Client(transport=httpx.MockTransport(self.mock_http)) as client:
+            main(self.cli_args("recovered", "--generate"), transport=HostedTransport(MOCK_ENV, client))
+        recovered = self.read("recovered.runtime.json")
+        self.assertEqual((recovered["provider_attempts"], recovered["cache_hits"]), (1, 4))
+        self.assertEqual(self.read("recovered/items.jsonl")["checks"]["provider_smoke_judge"]["status"], "evaluated")
+        self.run_isolated(["-c", BLOCK_NETWORK], *self.cli_args("recovered-replay", "--generate", "--cache-only"), environment=env)
+        for name in REPORTS:
+            self.assertEqual((self.root / "recovered" / name).read_bytes(), (self.root / "recovered-replay" / name).read_bytes())

@@ -1,6 +1,10 @@
+> **Historical provider smoke:** The result below describes an earlier invocation without credentials. Later live Bodhan calls and limited judge smokes are described in the README and sample report. This file is not a current full provider validation.
+
 # Provider smoke validation
 
-The one-item Hindi run used the installed package and exported graph via `python -I -m bodhan_eval` with `--generate --provider-smoke --max-cost-inr 1`. The assignment environment settings were absent. Forward translation was unavailable, and the dependent synthesis, back-translation, transcription, and structured judgment did not dispatch. The run recorded zero provider calls and ₹0 incremental cost. Actual hosted responses and visual import remain unverified.
+The one-item Hindi run used the installed package and exported graph via `python -I -m bodhan_eval` with `--generate --provider-smoke --max-cost-inr 1`. The assignment environment settings were absent. Forward translation was unavailable, and the dependent synthesis, back-translation, transcription, and structured judgment did not dispatch. The run recorded zero provider calls and ₹0 incremental cost. Actual hosted responses remain unverified.
+
+The current harness export was imported into local Langflow 1.13.2. The browser rendered all five nodes and four connectors. Dataset execution was tested through the headless CLI. Execution from the editor was not tested.
 
 Offline tests use the hosted adapter with mocked HTTP responses. They verify the five request shapes, selected usage fields, WAV parsing, unknown judge cost, and cap admission. A fresh process with network calls blocked replays five cache hits with zero calls and byte-identical reports. The supplied-output run preserves both the translation and WAV bytes when generation is omitted.
 

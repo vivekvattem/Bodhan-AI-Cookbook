@@ -99,12 +99,14 @@ class HarnessIntegrationTest(unittest.TestCase):
             {
                 "evaluated": 7,
                 "failed": 1,
-                "skipped": 1,
-                "inconclusive": 1,
+                "skipped": 0,
+                "inconclusive": 2,
                 "unavailable": 0,
             },
         )
         self.assertEqual(summary["categories"]["number"]["flags"], 3)
+        self.assertEqual(items["hi-no-numbers"]["checks"]["number"]["status"], "skipped")
+        self.assertEqual(items["hi-no-numbers"]["checks"]["semantic_translation"]["status"], "evaluated")
         self.assertEqual(
             (self.dataset.parent / "audio/fixture.wav").read_bytes(), original_audio
         )
@@ -151,10 +153,10 @@ class HarnessIntegrationTest(unittest.TestCase):
         flags = ("--baseline", str(original))
         revised = self.run_cli("revised", *flags, dataset=edited)
         diff = (revised / "diff.md").read_text()
-        self.assertIn("hi-changed (hi) · resolved", diff)
-        self.assertIn("bn-changed (bn) · prior", diff)
+        self.assertNotIn("hi-changed (hi) · resolved", diff)
+        self.assertIn("hi-changed (hi) · prior", diff)
         self.assertNotIn("bn-changed (bn) · resolved", diff)
-        self.assertIn("ur-changed (ur) · 40 km → ۴۵ km [major] to 40 km → ۵۰ km", diff)
+        self.assertNotIn("ur-changed (ur) · resolved", diff)
         replay = self.run_cli(
             "replay",
             *flags,
@@ -208,7 +210,7 @@ class HarnessIntegrationTest(unittest.TestCase):
         self.assertEqual(report["status"], "unavailable")
         item = jsonl(unavailable / "items.jsonl")[1]
         self.assertEqual(item["checks"]["back_translation"]["status"], "unavailable")
-        self.assertEqual(item["checks"]["judge"]["status"], "unavailable")
+        self.assertEqual(item["checks"]["judge"]["status"], "skipped")
         self.assertEqual(len(item["flags"]), 1)
 
     def test_cost_cap_blocks_paid_fixture_operations(self):

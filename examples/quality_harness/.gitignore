@@ -10,3 +10,4 @@ outputs/*
 !outputs/.gitkeep
 .bodhan-eval/
 *.wav
+working-docs/

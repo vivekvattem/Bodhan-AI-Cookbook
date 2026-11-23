@@ -20,11 +20,15 @@ def run_flow(records, session):
             os.environ["LANGFLOW_CONFIG_DIR"] = config_dir
             from lfx.load import run_flow_from_json
 
+            # LFX 1.13.2 expands backslash-n in string inputs before JSON parsing.
+            # Unicode escapes protect both literal backslashes and real newlines.
+            records_json = canonical_json(records).replace("\\\\", "\\u005c")
+            records_json = records_json.replace("\\n", "\\u000a")
             runs = run_flow_from_json(
                 flow=FLOW,
                 input_value="",
                 output_component=LAST_NODE,
-                tweaks={FIRST_NODE: {"rows_json": canonical_json(records)}},
+                tweaks={FIRST_NODE: {"rows_json": records_json}},
             )
             return runs[0].outputs[0].outputs["results"]["message"]["items"]
     finally:

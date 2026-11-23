@@ -4,8 +4,11 @@ from contextvars import ContextVar
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
+from .formatting import check_latex, check_tables, valid_format_finding
 from .models import Unavailable
-from .numbers import compare_numbers, valid_number_finding
+from .numbers import compare_numbers, quantity_candidates, valid_number_finding
+from .semantic import finalize_judgment
+from .speech import signal_check, signal_findings, transcript_check
 
 
 class Evaluation:
@@ -109,7 +112,9 @@ def deterministic(items):
         checks = item["checks"]
         checks["number"] = compare_numbers(item["source"], item["translation"])
         if checks["translation_generation"]["status"] == "unavailable":
-            checks["number"] = check("unavailable", "no usable translation")
+            checks["number"] = check("unavailable", "no usable translation", policy_version=checks["number"]["policy_version"])
+        checks["markdown_table"] = check_tables(item["source"], item["translation"])
+        checks["latex"] = check_latex(item["source"], item["translation"])
         checks["reference_score"] = (
             check("unavailable", item["issues"]["reference"])
             if "reference" in item["issues"]
@@ -118,11 +123,14 @@ def deterministic(items):
             else check("skipped", "no reference")
         )
         checks["other_translation_checks"] = check(
-            "pending", "detectors are outside this milestone"
+            "pending", "wrong-language and script detectors are outside this milestone"
         )
-        checks["speech_quality"] = check(
-            "pending", "speech detectors are outside this milestone"
-        )
+        if item.get("audio_path"):
+            checks["audio_signal"] = signal_check(item["audio_path"])
+        elif checks.get("speech_generation", {}).get("status") == "unavailable":
+            checks["audio_signal"] = check("unavailable", "no usable audio")
+        else:
+            checks["audio_signal"] = check("skipped", "no audio supplied")
     return items
 
 
@@ -158,6 +166,14 @@ def model_evidence(items):
                 checks["transcription"] = check("evaluated", evidence={"text": text})
             except Unavailable as exc:
                 checks["transcription"] = check("unavailable", str(exc))
+        if checks["transcription"]["status"] == "evaluated":
+            checks["speech_alignment"] = transcript_check(
+                item["translation"], checks["transcription"]["evidence"]["text"], checks["audio_signal"]
+            )
+        elif checks["transcription"]["status"] == "skipped":
+            checks["speech_alignment"] = check("skipped", "no transcript available")
+        else:
+            checks["speech_alignment"] = check("unavailable", "transcription unavailable")
     return items
 
 
@@ -166,26 +182,31 @@ def judging(items):
     if session.provider_smoke:
         for item in items:
             smoke_judgment(session.models, item)
+            item["checks"]["semantic_translation"] = check("skipped", "provider connectivity smoke")
         return items
     for item in items:
         checks = item["checks"]
-        candidate = checks["number"].get("candidate")
-        if candidate is None:
-            checks["judge"] = check("skipped", "no number finding to review")
+        if item["translation"] is None:
+            checks["semantic_translation"] = check("unavailable", "no usable translation")
             continue
         content = {name: item[name] for name in ("lang", "source", "translation")}
-        content["discrepancy"] = candidate["evidence"]
-        back = checks["back_translation"]
-        if back["status"] == "evaluated":
-            content["back_translation"] = back["evidence"]["text"]
+        source_numbers = quantity_candidates(item["source"], "source")
+        translation_numbers = quantity_candidates(item["translation"], "translation")
+        if checks["number"]["status"] == "inconclusive" or max(len(source_numbers), len(translation_numbers)) > 1:
+            content["quantity_candidates"] = source_numbers + translation_numbers
+        if checks["back_translation"]["status"] == "evaluated":
+            content["back_translation"] = checks["back_translation"]["evidence"]["text"]
         try:
-            verdict = session.models.judge(content)
-            checks["judge"] = check(
-                "evaluated" if verdict != "uncertain" else "inconclusive",
-                verdict=verdict,
-            )
+            checks["semantic_translation"] = {"status": "pending", "judgment": session.models.semantic_judge(content)}
         except Unavailable as exc:
-            checks["judge"] = check("unavailable", str(exc))
+            checks["semantic_translation"] = check("unavailable", str(exc))
+    for item in items:
+        checks = item["checks"]
+        candidates = checks["number"].get("candidates") or ([checks["number"]["candidate"]] if checks["number"].get("candidate") else [])
+        if not candidates:
+            checks["judge"] = check("skipped", "no number finding to review")
+            continue
+        checks["judge"] = check("skipped", "quantity correspondence is reviewed by semantic judge")
     return items
 
 
@@ -212,15 +233,30 @@ def validate_results(items):
     for item in items:
         checks = item["checks"]
         number = checks["number"]
-        candidate = number.pop("candidate", None)
+        candidate = number.get("candidate")
+        candidates = number.get("candidates") or ([candidate] if candidate else [])
         item["flags"] = []
-        if candidate is not None:
-            if valid_number_finding(candidate, item):
-                item["flags"].append(candidate)
+        finding = number.get("finding")
+        if finding:
+            if valid_number_finding(finding, item):
+                item["flags"].append(finding)
             else:
-                checks["number"] = check(
-                    "inconclusive", "number evidence did not map to original text"
-                )
+                checks["number"] = {**number, "status": "inconclusive", "reason": "number evidence did not map to original text"}
+        for candidate in candidates:
+            if not valid_number_finding(candidate, item):
+                checks["number"] = {**number, "status": "inconclusive", "reason": "number evidence did not map to original text"}
+        for name in ("markdown_table", "latex"):
+            candidates = checks[name].pop("candidates", [])
+            if all(valid_format_finding(candidate, item) for candidate in candidates):
+                item["flags"].extend(candidates)
+            else:
+                checks[name] = check("inconclusive", "format evidence did not map to original text")
+        semantic = checks.get("semantic_translation", {})
+        if "judgment" in semantic:
+            checks["semantic_translation"], flags = finalize_judgment(semantic["judgment"], item)
+            existing = {(flag["category"], flag["field"], tuple(flag["span"])) for flag in item["flags"]}
+            item["flags"].extend(flag for flag in flags if (flag["category"], flag["field"], tuple(flag["span"])) not in existing)
+        item["flags"].extend(signal_findings(checks["audio_signal"]))
         item.pop("audio_path", None)
         item.pop("issues", None)
     return items
