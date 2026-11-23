@@ -1,6 +1,8 @@
-> **Historical provider smoke:** The result below describes an earlier invocation without credentials. Later live Bodhan calls and limited judge smokes are described in the README and sample report. This file is not a current full provider validation.
+> These are limited smoke tests, not a full provider or accuracy validation. Historical runs are identified below.
 
 # Provider smoke validation
+
+The later compact-judge smoke used two previously inspected Tamil items with Groq `openai/gpt-oss-120b`, a ₹1 judge cap and ₹0 Bodhan cap. Three judge attempts succeeded, with estimated judge spend ₹0.11211 and zero Bodhan calls. The compact response on the changed item had valid token IDs, but the finding remained inconclusive because the units were not comparable. Both semantic judgments were inconclusive. All four stable reports matched in a network-blocked replay with zero provider attempts. This tiny diagnostic is not an accuracy measurement. Groq account rate limits and available credit can differ from published rates.
 
 The one-item Hindi run used the installed package and exported graph via `python -I -m bodhan_eval` with `--generate --provider-smoke --max-cost-inr 1`. The assignment environment settings were absent. Forward translation was unavailable, and the dependent synthesis, back-translation, transcription, and structured judgment did not dispatch. The run recorded zero provider calls and ₹0 incremental cost. Actual hosted responses remain unverified.
 

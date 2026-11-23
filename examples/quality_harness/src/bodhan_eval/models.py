@@ -21,6 +21,9 @@ from tenacity import wait_exponential
 
 from .dataset import VOICES, has_text
 from .judge_providers import judge_rates, request_options
+from .residual_judge import INSTRUCTIONS as RESIDUAL_INSTRUCTIONS
+from .residual_judge import VERSION as RESIDUAL_VERSION
+from .residual_judge import validate_review
 from .semantic import RUBRIC, parse_judgment
 from .semantic import VERSION as SEMANTIC_VERSION
 
@@ -339,6 +342,12 @@ def parse_response(request, raw):
         if rates and {"prompt_tokens", "completion_tokens"} <= usage.keys():
             cost = OPENROUTER_USD_INR * (rates[0] * usage["prompt_tokens"] + rates[1] * usage["completion_tokens"])
             basis = rates[2] + "_usage_estimate_inr_100_per_usd_2026_11_22"
+        if request.prompt_version == RESIDUAL_VERSION:
+            if raw["choices"][0].get("finish_reason") != "stop":
+                raise ValueError("incomplete residual judgment")
+            content = json.loads(request.payload["messages"][1]["content"])
+            return {"review": validate_review(verdict, content["source_tokens"], content["translation_tokens"]),
+                    "usage": usage, "cost_basis": basis}, cost
         if request.prompt_version == SEMANTIC_VERSION:
             if raw["choices"][0].get("finish_reason") != "stop":
                 raise ValueError("incomplete semantic judgment")
@@ -727,6 +736,17 @@ class Models:
             "providers": {provider: {"estimated_known_inr": format_inr(self.provider_original_known[provider]),
                                      "unpriced_requests": self.provider_original_unknown[provider]} for provider in ("bodhan", "judge")},
         }
+
+    def residual_judge(self, content):
+        allowed = {name: content[name] for name in ("source", "translation", "source_tokens", "translation_tokens")}
+        options = request_options(self.transport.judge_endpoint, self.transport.judge_model)
+        options["max_tokens"] = 512
+        payload = {"model": self.transport.judge_model,
+                   "messages": [{"role": "system", "content": RESIDUAL_INSTRUCTIONS},
+                                {"role": "user", "content": canonical_json(allowed)}], **options}
+        return self.call(Request("judge", self.transport.judge_model, self.transport.judge_endpoint, payload,
+                                 judge_reserve(self.transport, payload), prompt_version=RESIDUAL_VERSION,
+                                 purpose="number_residual_judge"))["review"]
 
     def semantic_judge(self, content):
         allowed = {name: content[name] for name in ("source", "translation", "lang", "back_translation", "quantity_candidates") if name in content}

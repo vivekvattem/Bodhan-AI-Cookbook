@@ -3,6 +3,7 @@
 The caller owns the original texts and token extraction. No model response is
 allowed to introduce offsets or new token IDs.
 """
+from collections import Counter
 from decimal import Decimal, InvalidOperation
 
 VERSION = "number-residual-id-review-v1"
@@ -15,6 +16,25 @@ INSTRUCTIONS = (
     'Use each residual ID exactly once. Give a one-sentence English reason. '
     'If correspondence or units are unclear, use uncertain. Never output offsets.'
 )
+
+
+def residual_tokens(source, translation):
+    """Select unique residual occurrences; do not guess between repeated values."""
+    from .numbers import number_tokens
+
+    left = number_tokens(source, 'source')
+    right = number_tokens(translation, 'translation')
+    if left is None or right is None:
+        return None
+    lc = Counter(Decimal(token['value']) for token in left)
+    rc = Counter(Decimal(token['value']) for token in right)
+    missing, extra = lc - rc, rc - lc
+    selected = []
+    for entries, residual, counts in ((left, missing, lc), (right, extra, rc)):
+        if any(counts[value] != count for value, count in residual.items()):
+            return None
+        selected.append([token for token in entries if Decimal(token['value']) in residual])
+    return selected if missing or extra else None
 
 
 def build_request(source, translation, source_tokens, translation_tokens):

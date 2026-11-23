@@ -91,15 +91,17 @@ The proof compares `25` with `25` and `35` with `25` after digit folding. Its sa
 
 The CLI validates rows independently and passes allowlisted inputs to the exported Langflow graph. Python modules prepare outputs, run deterministic number and formatting checks, gather Bodhan back-translation and transcription evidence, request semantic judgment, and validate original-text spans. Labels are joined after detection. Audio checks measure silence and clipping; transcript alignment supplies fallible evidence rather than proof of a speech error.
 
-The number check folds Unicode decimal digits, retains original code-point spans, and promotes a single residual pair only under its supported safeguards. Ambiguous correspondence, unsupported notation, and incompatible units remain inconclusive. Supported unit conversions are compared. The compact residual-ID judge is not yet connected to provider execution.
+The number check folds Unicode decimal digits, retains original code-point spans, and promotes a single residual pair only under its supported safeguards. Ambiguous correspondence, unsupported notation, and incompatible units remain inconclusive. Supported unit conversions are compared. A compact residual-ID judge is conditionally called for unresolved, uniquely identifiable quantity residuals. Python validates its IDs and evidence; ambiguous or unsupported pairings remain inconclusive.
 
 The 120-item [text demo](data/README.md) is previously inspected development data derived from eight English sources. [Human calibration labels](data/human_calibration.jsonl) cover 12 reviewed items from two sources; pass the file with `--calibration`. Its results are descriptive and do not justify threshold tuning. A [sample report](sample_report/summary.md) is included with its [calibration details](sample_report/calibration.json); its judge was unavailable. It is not a held-out accuracy measurement.
+
+A later [live text evaluation](sample_report/live-evaluation/summary.md) used cached and new Bodhan back-translations plus Groq judgment. It records incomplete checks and unknown failed-attempt billing; these previously inspected data do not establish held-out accuracy.
 
 Reports include `summary.md`, `summary.json`, `items.jsonl`, `calibration.json`, and `diff.md` when a baseline is supplied. Exact requests are cached, with bounded retries and explicit budget admission. Invocation telemetry is stored separately from stable reports. Use `--cache-only --replay-from <original-report>` with the same cache and detection settings to reproduce a saved run.
 
 ## Limitations
 
-The compact residual-ID judge is not integrated. Semantic checks can be unavailable or inconclusive; basic speech alignment is fallible and needs independent listening review. Reference scoring, wrong-language detection, speech formats beyond short PCM WAV, threshold tuning, and the 200-item speech-inclusive runtime target remain unverified or pending. The human-reviewed calibration subset is too small for reliable quality estimates.
+Compact and semantic judge checks can be unavailable or inconclusive; basic speech alignment is fallible and needs independent listening review. Reference scoring, wrong-language detection, speech formats beyond short PCM WAV, threshold tuning, and the 200-item speech-inclusive runtime target remain unverified or pending. The human-reviewed calibration subset is too small for reliable quality estimates.
 
 The end-to-end tests also run the exact production entry point with missing credentials. Run the Cookbook checks from a clean checkout root because its security scanner inspects working-tree files, including ignored `.env` files.
 
@@ -107,3 +109,7 @@ The end-to-end tests also run the exact production entry point with missing cred
 python scripts/validate_recipe.py examples/quality_harness
 make check
 ```
+
+Submission preparation, human-review limitations and a video script are in [SUBMISSION.md](SUBMISSION.md).
+
+Generated audio is kept out of Git. An accessible audio link for the submission remains to be provided; the video link also remains pending.

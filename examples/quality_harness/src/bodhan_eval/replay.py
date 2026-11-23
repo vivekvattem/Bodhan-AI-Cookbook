@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .models import canonical_json, format_inr
 from .numbers import VERSION as NUMBER_VERSION
+from .residual_judge import VERSION as RESIDUAL_VERSION
 from .semantic import VERSION as SEMANTIC_VERSION
 
 
@@ -18,7 +19,7 @@ def plan_key(rows, transport, generate=False, provider_smoke=False):
             except OSError:
                 fields["audio_sha256"] = "unreadable"
         records.append([row.line, row.item_id, row.lang, row.status, row.reason, fields])
-    value = ["evaluation-plan-v3", NUMBER_VERSION, SEMANTIC_VERSION, records, transport.namespace, transport.judge_model,
+    value = ["evaluation-plan-v4", NUMBER_VERSION, SEMANTIC_VERSION, RESIDUAL_VERSION, records, transport.namespace, transport.judge_model,
              transport.judge_endpoint, generate, provider_smoke]
     return hashlib.sha256(canonical_json(value).encode()).hexdigest()
 

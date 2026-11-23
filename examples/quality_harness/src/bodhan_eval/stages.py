@@ -7,6 +7,7 @@ from tempfile import NamedTemporaryFile
 from .formatting import check_latex, check_tables, valid_format_finding
 from .models import Unavailable
 from .numbers import compare_numbers, quantity_candidates, valid_number_finding
+from .residual_judge import build_request, residual_tokens
 from .semantic import finalize_judgment
 from .speech import signal_check, signal_findings, transcript_check
 
@@ -202,11 +203,22 @@ def judging(items):
             checks["semantic_translation"] = check("unavailable", str(exc))
     for item in items:
         checks = item["checks"]
-        candidates = checks["number"].get("candidates") or ([checks["number"]["candidate"]] if checks["number"].get("candidate") else [])
-        if not candidates:
-            checks["judge"] = check("skipped", "no number finding to review")
+        if checks["number"]["status"] != "inconclusive" or not item.get("translation"):
+            checks["judge"] = check("skipped", "no unresolved number residuals")
             continue
-        checks["judge"] = check("skipped", "quantity correspondence is reviewed by semantic judge")
+        selected = residual_tokens(item["source"], item["translation"])
+        if selected is None:
+            checks["judge"] = check("skipped", "residuals unsupported, equivalent, or occurrence-ambiguous")
+            continue
+        left, right = selected
+        try:
+            payload = build_request(item["source"], item["translation"], left, right)
+            review = session.models.residual_judge(payload)
+            checks["judge"] = check("inconclusive", "judge correspondence requires original evidence validation", review=review)
+            checks["judge"]["source_tokens"] = left
+            checks["judge"]["translation_tokens"] = right
+        except (Unavailable, ValueError) as exc:
+            checks["judge"] = check("unavailable", str(exc))
     return items
 
 
@@ -242,6 +254,23 @@ def validate_results(items):
                 item["flags"].append(finding)
             else:
                 checks["number"] = {**number, "status": "inconclusive", "reason": "number evidence did not map to original text"}
+        judge = checks.get("judge", {})
+        for pair in judge.get("review", []):
+            if pair["verdict"] != "mismatch":
+                continue
+            left = judge["source_tokens"][int(pair["source"][1:]) - 1]
+            right = judge["translation_tokens"][int(pair["translation"][1:]) - 1]
+            if (left.get("suffix_interpretation") or right.get("suffix_interpretation") or
+                    left.get("dimension") != right.get("dimension")):
+                continue
+            from decimal import Decimal
+            if left.get("dimension") and Decimal(left["base_value"]) == Decimal(right["base_value"]):
+                continue
+            proposed = {"category": "number", "severity": "major", "check": "number", "field": "translation",
+                        "span": right["span"], "evidence": {"source": left, "translation": right,
+                        "pairing": "judge-selected residuals", "reason": pair["reason"]}}
+            if valid_number_finding(proposed, item):
+                item["flags"].append(proposed)
         for candidate in candidates:
             if not valid_number_finding(candidate, item):
                 checks["number"] = {**number, "status": "inconclusive", "reason": "number evidence did not map to original text"}
